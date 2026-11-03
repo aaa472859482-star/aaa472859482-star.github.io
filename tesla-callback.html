@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tesla 授权回调</title>
+<style>
+body{font-family:-apple-system,Helvetica,Arial,sans-serif;max-width:640px;margin:40px auto;padding:0 20px;line-height:1.7;color:#222}
+.ok{background:#e8f7ee;border:1px solid #9fd8b4;border-radius:8px;padding:16px}
+.warn{background:#fff7e6;border:1px solid #f0d48a;border-radius:8px;padding:16px}
+code{word-break:break-all;background:#f4f4f4;padding:2px 6px;border-radius:4px;font-size:13px}
+textarea{width:100%;height:90px;font-size:13px;border:1px solid #ccc;border-radius:6px;padding:8px;box-sizing:border-box}
+button{background:#1a73e8;color:#fff;border:0;border-radius:6px;padding:10px 22px;font-size:15px;margin-top:10px}
+</style>
+</head>
+<body>
+<h2>Tesla 授权回调</h2>
+<div id="box">读取中…</div>
+<script>
+(function(){
+  var box=document.getElementById('box');
+  var p=new URLSearchParams(location.search);
+  var code=p.get('code'), err=p.get('error');
+  if(err){box.innerHTML='<div class="warn"><b>授权失败：</b><code>'+err+'</code><br>请返回重试。</div>';return;}
+  if(!code){box.innerHTML='<div class="warn">这是授权回调页。请从特斯拉授权流程自动跳转到这里，不要直接打开。</div>';return;}
+  box.innerHTML='<div class="ok"><b>授权成功！</b><br>点下面按钮复制完整链接，发给你的助手：</div>'
+    +'<textarea id="u" readonly></textarea><br><button id="c">复制链接</button><div id="t" style="color:#1a7f37;margin-top:8px"></div>';
+  document.getElementById('u').value=location.href;
+  document.getElementById('c').onclick=function(){
+    var t=document.getElementById('u');t.select();
+    try{document.execCommand('copy');}catch(e){}
+    if(navigator.clipboard){navigator.clipboard.writeText(t.value).catch(function(){});}
+    document.getElementById('t').textContent='已复制，去发给助手吧';
+  };
+})();
+</script>
+</body>
+</html>
